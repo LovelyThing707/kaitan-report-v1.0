@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快単 ER図（データベース設計）v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4EFE4; --paper-2:#EBE3D3; --surface:#FFFDF8;
+  --ink:#272F37; --ink-soft:#565D64; --muted:#8A8170;
+  --line:#E4DBC9; --line-soft:#EFE8D9;
+  --brand:#14534B; --brand-deep:#0E3C36; --brand-soft:#E5EEEA;
+  --gold:#A9762A; --gold-soft:#FAF1DA; --gold-line:#E6CF9C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Zen Kaku Gothic New",sans-serif;background:var(--paper);background-image:radial-gradient(circle at 12% -10%,rgba(20,83,75,.06),transparent 42%),radial-gradient(circle at 100% 0%,rgba(169,118,42,.06),transparent 38%);color:var(--ink);line-height:1.8;font-size:16px;-webkit-font-smoothing:antialiased;padding:0}
+.page{max-width:920px;margin:0 auto;padding:30px 18px 90px}
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;height:58px;padding:0 22px;background:rgba(244,239,228,.88);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+.topbar .brand{font-family:"Shippori Mincho",serif;font-weight:700;color:var(--brand);text-decoration:none;font-size:16px;letter-spacing:.05em;white-space:nowrap;line-height:1.05}
+.topbar .brand .en{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.32em;color:var(--gold);display:block;margin-top:1px}
+.topbar nav{margin-left:auto;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.topbar nav::-webkit-scrollbar{display:none}
+.topbar nav a{font-size:12.5px;text-decoration:none;padding:7px 14px;border-radius:99px;color:var(--ink-soft);white-space:nowrap;transition:.2s;font-weight:500}
+.topbar nav a:hover{background:var(--brand-soft);color:var(--brand-deep)}
+.topbar nav a.cur{background:var(--brand);color:#F5F0E4;font-weight:700}
+.masthead{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--brand-deep),var(--brand) 70%);color:#F5F0E4;border-radius:20px;padding:44px 46px 40px;box-shadow:0 24px 60px -28px rgba(14,60,54,.7);animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.masthead::after{content:"設計";position:absolute;right:-2px;bottom:-40px;font-family:"Shippori Mincho",serif;font-weight:800;font-size:170px;color:rgba(255,255,255,.05);line-height:1}
+.eyebrow{position:relative;z-index:1;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-line);margin-bottom:18px}
+.masthead h1{position:relative;z-index:1;font-family:"Shippori Mincho",serif;font-weight:800;font-size:38px;line-height:1.28;margin-bottom:10px}
+.masthead .lead{color:rgba(245,240,228,.82);font-size:15px;max-width:62ch;position:relative;z-index:1}
+.meta{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-top:22px;margin-bottom:30px;padding:8px;position:relative;z-index:2;box-shadow:0 18px 40px -30px rgba(40,48,55,.4);display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;animation:rise .7s .1s cubic-bezier(.2,.7,.2,1) both}
+.meta div{padding:13px 18px;background:var(--surface)}
+.meta dt{font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;font-family:"JetBrains Mono",monospace}
+.meta dd{font-size:14.5px;font-weight:500}
+.philosophy{background:linear-gradient(135deg,#FBF2DD,#FBF8EC);border:1px solid var(--gold-line);border-radius:16px;padding:26px 30px;margin-bottom:30px;animation:rise .7s .15s cubic-bezier(.2,.7,.2,1) both}
+.philosophy h2{font-family:"Shippori Mincho",serif;font-size:18px;color:#7a5e1f;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.philosophy h2::before{content:"💡";font-size:20px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 14px}
+.split .db{background:var(--surface);border:1px solid var(--gold-line);border-radius:12px;padding:16px 18px}
+.split .db .tag{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;color:var(--brand);background:var(--brand-soft);padding:3px 9px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.split .db h3{font-family:"Shippori Mincho",serif;font-size:15px;color:var(--ink);margin-bottom:6px}
+.split .db p{font-size:13px;color:var(--ink-soft);margin:0}
+.philosophy .sum{font-size:14px;color:#6b5526;margin:0}
+section{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:34px 38px;margin-bottom:22px;box-shadow:0 2px 0 rgba(228,219,201,.5);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.sec-head{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--line-soft)}
+.sec-num{flex-shrink:0;width:42px;height:42px;border-radius:12px;background:var(--brand);color:#F5F0E4;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:600;font-size:17px;box-shadow:0 8px 18px -8px rgba(20,83,75,.6)}
+.sec-head h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:22px;letter-spacing:.02em}
+.db-banner{display:flex;align-items:center;gap:12px;background:var(--brand-soft);border:1px solid #BBD2CB;border-radius:11px;padding:12px 18px;margin-bottom:18px;font-size:14px}
+.db-banner code{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--brand-deep);font-size:13.5px}
+.db-banner .rw{margin-left:auto;font-size:11.5px;font-weight:700;letter-spacing:.04em;padding:3px 11px;border-radius:99px;background:#fff;border:1px solid var(--line)}
+.cap{color:var(--ink-soft);font-size:13.5px;margin-bottom:14px}
+/* schema cards */
+.schema{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 10px 26px -24px rgba(40,48,55,.5)}
+.schema.future{opacity:.82;border-style:dashed}
+.schema-head{background:var(--brand);color:#F3EEE2;padding:11px 18px;display:flex;justify-content:space-between;align-items:center}
+.schema.future .schema-head{background:#857B68}
+.schema-head .name{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:15px;letter-spacing:.02em}
+.schema-head .role{font-size:12px;opacity:.85}
+.schema table{border-collapse:collapse;width:100%;font-size:13px}
+.schema td{padding:8px 14px;border-top:1px solid var(--line-soft);vertical-align:top}
+.schema tr:nth-child(even){background:#FBF8F1}
+.col-type{width:84px}
+.type{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);background:#EFE8D9;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.col-name{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--brand-deep);font-size:13px;white-space:nowrap}
+.col-key{width:54px;text-align:center}
+.kb{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
+.kb.pk{background:var(--gold-soft);color:var(--gold);border:1px solid var(--gold-line)}
+.kb.fk{background:#fff;color:var(--brand);border:1px solid #BBD2CB}
+.col-desc{color:var(--ink-soft)}
+.note-inline{background:#FBF8F1;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:var(--ink-soft);margin:6px 0 4px}
+.note-inline code{font-family:"JetBrains Mono",monospace;color:var(--brand-deep);font-size:12px}
+/* relationship diagram */
+.diagram{background:#FFFDF8;border:1px solid var(--line);border-radius:14px;padding:22px 14px;overflow-x:auto;text-align:center;margin-bottom:18px}
+.diagram .mermaid{display:inline-block;min-width:100%}
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+table.grid{border-collapse:collapse;width:100%;font-size:13.4px;min-width:480px}
+.grid th{background:var(--brand);color:#F3EEE2;font-weight:600;text-align:left;padding:11px 14px;font-size:12.6px;white-space:nowrap}
+.grid td{padding:9px 14px;border-top:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft)}
+.grid tbody tr:nth-child(even){background:#FBF8F1}
+.grid tbody tr:hover{background:var(--brand-soft)}
+.grid td strong{color:var(--brand-deep)}
+.mono{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--brand-deep)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap}
+.pill.yes{background:#E2F1E8;color:#2C7A57}
+.pill.no{background:#F4E5DE;color:#A85638}
+.pill.data{background:var(--gold-soft);color:var(--gold)}
+pre{background:#16201E;color:#D9E4DF;border-radius:13px;padding:20px 22px;overflow-x:auto;margin:8px 0;font-family:"JetBrains Mono",monospace;font-size:12.8px;line-height:1.75;border:1px solid #243430}
+pre .c{color:#7E9C8E}
+pre .k{color:#E0B062}
+pre .s{color:#C5E0A8}
+ul{margin:6px 0 4px 1.3em}li{margin-bottom:9px}
+strong{color:var(--brand-deep)}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin-top:34px;padding:24px;font-style:italic;font-family:"Shippori Mincho",serif}
+.foot .mark{font-family:"JetBrains Mono",monospace;font-style:normal;letter-spacing:.3em;font-size:11px;color:var(--brand);display:block;margin-bottom:8px}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (max-width:680px){
+  body{font-size:15px}.page{padding:22px 12px 80px}
+  .masthead{padding:30px 22px}.masthead h1{font-size:24px}.masthead::after{font-size:120px;bottom:-26px}
+  section{padding:22px 16px}.meta,.split{grid-template-columns:1fr}
+  .sec-head{gap:12px}.sec-num{width:36px;height:36px;font-size:15px;border-radius:10px}.sec-head h2{font-size:18px}
+  .topbar{height:54px;padding:0 14px}.topbar .brand{font-size:15px}
+  .philosophy{padding:20px 18px}.db-banner{flex-wrap:wrap}.db-banner .rw{margin-left:0}
+  .schema-head{flex-wrap:wrap;gap:4px}.schema td{padding:7px 10px}
+}
+@media print{body{background:#fff;padding:0}.topbar{display:none!important}.masthead{box-shadow:none;background:none;border-bottom:3px solid var(--brand);border-radius:0;color:var(--ink)}.masthead::after{display:none}.masthead .eyebrow,.masthead h1,.masthead .lead{color:var(--ink)}section,.meta,.philosophy{box-shadow:none;break-inside:avoid;animation:none}.schema{break-inside:avoid}*{animation:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top">快単<span class="en">KAITAN</span></a>
+  <nav>
+    <a href="01_快単_詳細仕様書_v1.0.html">01 詳細仕様書</a>
+    <a href="02_快単_画面遷移図_v1.0.html">02 画面遷移図</a>
+    <a class="cur" href="#top">03 ER図</a>
+  </nav>
+</header>
+<div class="page" id="top">
+
+  <header class="masthead">
+    <div class="eyebrow">快単 · English Vocabulary App</div>
+    <h1>ER図<br><span style="font-size:.52em;font-weight:600">データベース設計 / MVP</span></h1>
+    <p class="lead">端末内（オフライン）のSQLiteで、教材データと学習履歴をどう保存・関連づけるかを示します。将来の教材拡張と利用者データ保護を両立する設計です。</p>
+  </header>
+
+  <dl class="meta">
+    <div><dt>バージョン</dt><dd>v1.0（仕様確定フェーズ・ご確認用）</dd></div>
+    <div><dt>作成日</dt><dd>2026年5月25日</dd></div>
+    <div><dt>宛先</dt><dd>一般社団法人KAI　菊地雅文 様</dd></div>
+    <div><dt>DB</dt><dd>SQLite（端末内・オフライン）</dd></div>
+  </dl>
+
+  <div class="philosophy">
+    <h2>設計方針：データを2つに分離します</h2>
+    <div class="split">
+      <div class="db">
+        <span class="tag">① content.db</span>
+        <h3>単語マスタDB</h3>
+        <p>2,201語などの教材データ。読み取り専用でアプリに同梱。将来「英検1級3000語」等を追加する際は、このDBを差し替えるだけで済みます。</p>
+      </div>
+      <div class="db">
+        <span class="tag">② progress.db</span>
+        <h3>学習履歴DB</h3>
+        <p>利用者の学習状況。書き込み可能。教材を差し替えても利用者の履歴は影響を受けません。</p>
+      </div>
+    </div>
+    <p class="sum">この分離により、<strong>教材の拡張（拡張性）</strong>と<strong>利用者データの保護（安定性・保守性）</strong>を両立します。</p>
+  </div>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">01</div><h2>単語マスタDB（content.db）</h2></div>
+    <div class="db-banner"><code>content.db</code><span>2,201語の教材データ。アプリに同梱。</span><span class="rw">読み取り専用</span></div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">blocks</span><span class="role">46ブロックの定義</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">block_no</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">ブロック番号 1〜46</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">vol</td><td></td><td class="col-desc">快単 vol 1 or 2</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">word_id_start</td><td></td><td class="col-desc">語ID開始</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">word_id_end</td><td></td><td class="col-desc">語ID終了</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">word_count</td><td></td><td class="col-desc">収録語数</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">label</td><td></td><td class="col-desc">表示ラベル 例：7（289〜336）</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">words</span><span class="role">2,201語の単語マスタ</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">id</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">見出し№ 1〜2201</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">block_no</td><td class="col-key"><span class="kb fk">FK</span></td><td class="col-desc">所属ブロック 1〜46</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">vol</td><td></td><td class="col-desc">快単 vol 1 or 2</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">word</td><td></td><td class="col-desc">英単語</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">katakana</td><td></td><td class="col-desc">カタカナ読み</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">phonetic</td><td></td><td class="col-desc">発音記号（任意）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">pos1</td><td></td><td class="col-desc">品詞1（他/自/名/形/副/前/接/間）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">meaning1</td><td></td><td class="col-desc">意味1</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">pos2</td><td></td><td class="col-desc">品詞2（任意）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">meaning2</td><td></td><td class="col-desc">意味2（任意）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">example_en</td><td></td><td class="col-desc">例文（英）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">example_ja</td><td></td><td class="col-desc">例文（和訳）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">mnemonic_type</td><td></td><td class="col-desc">覚え方種別（ゴロ/語源/カタカナ/イメージ）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">mnemonic_text</td><td></td><td class="col-desc">覚え方本文</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">etymology</td><td></td><td class="col-desc">語源（源タグ・任意）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">image_filename</td><td></td><td class="col-desc">イラストファイル名（将来対応）</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">second_stage_items</span><span class="role">Second stage 出題項目</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">id</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">—</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">word_id</td><td class="col-key"><span class="kb fk">FK</span></td><td class="col-desc">対象見出し№</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">seq</td><td></td><td class="col-desc">1〜5</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">question_tag</td><td></td><td class="col-desc">問題タグ（名/形/動/類/反 等・正規化後）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">answer_text</td><td></td><td class="col-desc">解答（派生語・反対語・2番目意味 等）</td></tr>
+      </table>
+    </div>
+    <div class="note-inline"><code>second_stage_items</code> は基本データExcelの「問題1〜5／解答1〜5」を正規化（1行1項目化）したものです。<strong>Second stage向けのため、データは保持しますがMVPでは未使用</strong>です。</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">02</div><h2>学習履歴DB（progress.db）</h2></div>
+    <div class="db-banner"><code>progress.db</code><span>利用者の学習状況。教材を差し替えても影響を受けません。</span><span class="rw">書き込み可能</span></div>
+
+    <p class="cap">テーブル間の関係（概観）。教材側（content）と履歴側（progress）は論理的に語ID・ブロック番号で結びつきます。</p>
+    <div class="diagram">
+<pre class="mermaid">
+erDiagram
+  blocks ||--o{ words : "contains"
+  words ||--o{ second_stage_items : "has"
+  sessions ||--o{ session_blocks : "選択"
+  sessions ||--o{ session_items : "巡別結果"
+  words ||--o{ word_progress : "学習履歴"
+  blocks ||--o{ block_state : "状態"
+  stage_progress ||--|| character_state : "ステージ"
+</pre>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">word_progress</span><span class="role">単語ごとの学習履歴・初回判定</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">word_id</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">対象見出し№（複合キー）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">stage</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">first / second（複合キー）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">first_round_result</td><td></td><td class="col-desc">初回判定（ok / recheck）「初回OKを除く」に使用</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">last_result</td><td></td><td class="col-desc">直近結果</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">attempt_count</td><td></td><td class="col-desc">試行回数</td></tr>
+        <tr><td><span class="type">datetime</span></td><td class="col-name">updated_at</td><td></td><td class="col-desc">更新日時</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">block_state</span><span class="role">ブロックの状態（未学習/選択/完了）</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">block_no</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">ブロック番号（複合キー）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">stage</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">first / second（複合キー）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">status</td><td></td><td class="col-desc">未学習 / 選択 / 完了</td></tr>
+        <tr><td><span class="type">datetime</span></td><td class="col-name">completed_at</td><td></td><td class="col-desc">完了日時</td></tr>
+        <tr><td><span class="type">datetime</span></td><td class="col-name">updated_at</td><td></td><td class="col-desc">更新日時</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">sessions</span><span class="role">学習セッション（巡目・モード・中断再開）</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">id</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">セッションID</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">stage</td><td></td><td class="col-desc">first / second</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">status</td><td></td><td class="col-desc">active / finished（中断・再開判定）</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">current_round</td><td></td><td class="col-desc">現在の巡目</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">start_mode</td><td></td><td class="col-desc">スタート / 初回OKを除く</td></tr>
+        <tr><td><span class="type">datetime</span></td><td class="col-name">updated_at</td><td></td><td class="col-desc">更新日時</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">session_blocks</span><span class="role">セッションで選択したブロック</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">id</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">—</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">session_id</td><td class="col-key"><span class="kb fk">FK</span></td><td class="col-desc">対象セッション</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">block_no</td><td></td><td class="col-desc">選択ブロック番号</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">session_items</span><span class="role">セッション内の各単語の巡別結果</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">int</span></td><td class="col-name">id</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">—</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">session_id</td><td class="col-key"><span class="kb fk">FK</span></td><td class="col-desc">対象セッション</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">word_id</td><td></td><td class="col-desc">対象見出し№</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">round</td><td></td><td class="col-desc">巡目</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">presented_order</td><td></td><td class="col-desc">出題順（ランダム）</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">result</td><td></td><td class="col-desc">pending / ok / recheck</td></tr>
+      </table>
+    </div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">stage_progress</span><span class="role">ステージごとの回転数・星評価</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">text</span></td><td class="col-name">stage</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">first / second</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">lap_count</td><td></td><td class="col-desc">回転数（銀/金の星数を算出）</td></tr>
+        <tr><td><span class="type">datetime</span></td><td class="col-name">updated_at</td><td></td><td class="col-desc">更新日時</td></tr>
+      </table>
+    </div>
+
+    <div class="schema future">
+      <div class="schema-head"><span class="name">character_state</span><span class="role">育成キャラ状態（将来）</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">text</span></td><td class="col-name">stage</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">first / second</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">selected_character</td><td></td><td class="col-desc">選択キャラ</td></tr>
+        <tr><td><span class="type">int</span></td><td class="col-name">growth_stage</td><td></td><td class="col-desc">成長段階</td></tr>
+        <tr><td><span class="type">datetime</span></td><td class="col-name">updated_at</td><td></td><td class="col-desc">更新日時</td></tr>
+      </table>
+    </div>
+    <div class="note-inline"><code>character_state</code> はSecond stageの育成キャラクター用です。<strong>MVPでは未使用</strong>ですが、将来拡張のためスキーマを用意しておきます。</div>
+
+    <div class="schema">
+      <div class="schema-head"><span class="name">app_settings</span><span class="role">各種設定（選択ステージ等）</span></div>
+      <table>
+        <tr><td class="col-type"><span class="type">text</span></td><td class="col-name">key</td><td class="col-key"><span class="kb pk">PK</span></td><td class="col-desc">設定キー</td></tr>
+        <tr><td><span class="type">text</span></td><td class="col-name">value</td><td></td><td class="col-desc">設定値</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">03</div><h2>主要テーブルの役割</h2></div>
+    <div class="tbl-wrap"><table class="grid">
+      <thead><tr><th style="width:88px">DB</th><th>テーブル</th><th>役割</th><th class="center" style="width:90px">MVP</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">content</span></td><td><span class="mono">words</span></td><td>2,201語の単語マスタ</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">content</span></td><td><span class="mono">blocks</span></td><td>46ブロックの定義（語ID範囲）</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">content</span></td><td><span class="mono">second_stage_items</span></td><td>Second stage出題項目（保持のみ）</td><td><span class="pill data">データのみ</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">word_progress</span></td><td>単語ごとの学習履歴・初回判定</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">block_state</span></td><td>ブロックの状態（未学習/選択/完了）</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">sessions</span></td><td>学習セッション（巡目・モード・中断再開）</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">session_blocks</span></td><td>セッションで選択したブロック</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">session_items</span></td><td>セッション内の各単語の巡別結果</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">stage_progress</span></td><td>ステージごとの回転数・星評価</td><td><span class="pill yes">✓</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">character_state</span></td><td>育成キャラ状態</td><td><span class="pill no">将来</span></td></tr>
+        <tr><td><span class="mono">progress</span></td><td><span class="mono">app_settings</span></td><td>各種設定（選択ステージ等）</td><td><span class="pill yes">✓</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">04</div><h2>主要機能とデータの対応</h2></div>
+    <div class="tbl-wrap"><table class="grid">
+      <thead><tr><th style="width:24%">機能</th><th style="width:30%">使用テーブル</th><th>処理概要</th></tr></thead>
+      <tbody>
+        <tr><td><strong>範囲指定・ブロック色</strong></td><td><span class="mono">blocks / block_state</span></td><td>状態に応じて白／青／薄色を表示</td></tr>
+        <tr><td><strong>満点法（巡目進行）</strong></td><td><span class="mono">sessions / session_items</span></td><td>当該巡の result を集計し、recheck のみで次巡を構成</td></tr>
+        <tr><td><strong>残/総数・OK・再チェック表示</strong></td><td><span class="mono">session_items</span></td><td>round = current_round を result で集計</td></tr>
+        <tr><td><strong>初回OKを除く</strong></td><td><span class="mono">words（選択ブロック）× word_progress.first_round_result</span></td><td>選択範囲の語から、初回 ok の語を差し引いて出題（💡 SQLの差集合）</td></tr>
+        <tr><td><strong>中断・再開</strong></td><td><span class="mono">sessions（status=active）/ session_items</span></td><td>status=active のセッションと巡内進捗を復元</td></tr>
+        <tr><td><strong>星評価</strong></td><td><span class="mono">stage_progress</span></td><td>lap_count から銀／金の星数を算出</td></tr>
+        <tr><td><strong>完了状態の保持</strong></td><td><span class="mono">block_state / word_progress</span></td><td>⑪終了時に完了化、再チェック記録は保持</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">05</div><h2>「初回OKを除く」のデータ処理イメージ（参考）</h2></div>
+    <pre><span class="c">-- 選択ブロックの単語のうち、初回にOK済みの語を除外して出題対象を得る</span>
+<span class="k">SELECT</span> w.id
+<span class="k">FROM</span> content.words w
+<span class="k">WHERE</span> w.block_no <span class="k">IN</span> (<span class="c">/* 選択ブロック */</span>)
+  <span class="k">AND</span> w.id <span class="k">NOT IN</span> (
+    <span class="k">SELECT</span> p.word_id
+    <span class="k">FROM</span> progress.word_progress p
+    <span class="k">WHERE</span> p.stage = <span class="s">'first'</span>
+      <span class="k">AND</span> p.first_round_result = <span class="s">'ok'</span>
+  );</pre>
+    <p style="margin-top:10px">このような関係検索（差集合）を簡潔・確実に記述できることが、本案件で <strong>SQLite（drift）</strong> を採用する主たる理由です。</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">06</div><h2>設計上の留意点</h2></div>
+    <ul>
+      <li>ブロック番号は語ID（見出し№）から自動算出し、<span class="mono">blocks</span> に確定値として保持します（基本データExcelの「P番号」列は使用しません。仕様書ご確認事項 <strong>Q-2</strong>）。
+        <div class="note-inline" style="margin-top:8px">
+          vol.1：<code>block = ceil(id / 48)</code>（1〜23）<br>
+          vol.2：<code>block = 23 + ceil((id − 1100) / 48)</code>（24〜46）
+        </div>
+      </li>
+      <li><span class="mono">word_progress</span>・<span class="mono">block_state</span> は <strong>（対象, stage）の複合キー</strong>とし、First / Second stage の履歴を独立管理します。</li>
+      <li>スキーマ変更時も学習履歴を失わないよう、<strong>drift のマイグレーション機能</strong>で版管理します。</li>
+      <li>単語マスタ更新（教材差し替え）と学習履歴は<strong>物理的に別DB</strong>とし、相互に影響しません。</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">07</div><h2>変更履歴</h2></div>
+    <div class="tbl-wrap"><table class="grid">
+      <thead><tr><th style="width:90px">版</th><th style="width:140px">日付</th><th>内容</th></tr></thead>
+      <tbody><tr><td><strong>v1.0</strong></td><td>2026-05-25</td><td>初版（仕様確定フェーズ・ご確認用）</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <div class="foot">
+    <span class="mark">快単 · KAITAN</span>
+    データ設計にご不明点・ご要望がございましたら、お気軽にお知らせください。
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:false,
+    securityLevel:'loose',
+    theme:'base',
+    themeVariables:{
+      fontFamily:"'JetBrains Mono','Zen Kaku Gothic New',monospace",
+      fontSize:'13px',
+      primaryColor:'#E5EEEA',
+      primaryBorderColor:'#14534B',
+      primaryTextColor:'#272F37',
+      lineColor:'#9A8E78',
+      secondaryColor:'#FAF1DA',
+      tertiaryColor:'#FFFDF8'
+    }
+  });
+  mermaid.run();
+</script>
+</body>
+</html>

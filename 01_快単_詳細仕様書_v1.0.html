@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快単 詳細仕様書 v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4EFE4; --paper-2:#EBE3D3; --surface:#FFFDF8;
+  --ink:#272F37; --ink-soft:#565D64; --muted:#8A8170;
+  --line:#E4DBC9; --line-soft:#EFE8D9;
+  --brand:#14534B; --brand-deep:#0E3C36; --brand-soft:#E5EEEA;
+  --gold:#A9762A; --gold-soft:#FAF1DA; --gold-line:#E6CF9C;
+  --ok:#2C7A57; --no:#A85638; --future:#8A8170;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Zen Kaku Gothic New",sans-serif;
+  background:var(--paper);
+  background-image:radial-gradient(circle at 12% -10%,rgba(20,83,75,.06),transparent 42%),radial-gradient(circle at 100% 0%,rgba(169,118,42,.06),transparent 38%);
+  color:var(--ink); line-height:1.8; font-size:16px;
+  -webkit-font-smoothing:antialiased; padding:0;
+}
+.page{max-width:920px;margin:0 auto;padding:30px 18px 90px;}
+section[id]{scroll-margin-top:78px}
+/* ---------- sticky topbar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:14px;
+  height:58px;padding:0 22px;
+  background:rgba(244,239,228,.88);
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar .brand{font-family:"Shippori Mincho",serif;font-weight:700;color:var(--brand);text-decoration:none;font-size:16px;letter-spacing:.05em;white-space:nowrap;line-height:1.05}
+.topbar .brand .en{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.32em;color:var(--gold);display:block;margin-top:1px}
+.topbar nav{margin-left:auto;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.topbar nav::-webkit-scrollbar{display:none}
+.topbar nav a{font-size:12.5px;text-decoration:none;padding:7px 14px;border-radius:99px;color:var(--ink-soft);white-space:nowrap;transition:.2s;font-weight:500}
+.topbar nav a:hover{background:var(--brand-soft);color:var(--brand-deep)}
+.topbar nav a.cur{background:var(--brand);color:#F5F0E4;font-weight:700}
+/* ---------- header ---------- */
+.masthead{
+  position:relative; overflow:hidden;
+  background:linear-gradient(135deg,var(--brand-deep),var(--brand) 70%);
+  color:#F5F0E4; border-radius:20px;
+  padding:44px 46px 40px; box-shadow:0 24px 60px -28px rgba(14,60,54,.7);
+  animation:rise .7s cubic-bezier(.2,.7,.2,1) both;
+}
+.masthead::after{
+  content:"快単"; position:absolute; right:-8px; bottom:-44px;
+  font-family:"Shippori Mincho",serif; font-weight:800;
+  font-size:190px; color:rgba(255,255,255,.05); letter-spacing:.05em; line-height:1;
+}
+.eyebrow{position:relative;z-index:1;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-line);margin-bottom:18px}
+.masthead h1{position:relative;z-index:1;font-family:"Shippori Mincho",serif;font-weight:800;font-size:38px;line-height:1.28;letter-spacing:.01em;margin-bottom:10px}
+.masthead .lead{color:rgba(245,240,228,.82);font-size:15px;max-width:60ch;position:relative;z-index:1}
+/* ---------- meta ---------- */
+.meta{
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  margin-top:22px;margin-bottom:30px;padding:8px;position:relative;z-index:2;
+  box-shadow:0 18px 40px -30px rgba(40,48,55,.4);
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;
+  animation:rise .7s .1s cubic-bezier(.2,.7,.2,1) both;
+}
+.meta div{padding:13px 18px;background:var(--surface)}
+.meta dt{font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;font-family:"JetBrains Mono",monospace}
+.meta dd{font-size:14.5px;font-weight:500;color:var(--ink)}
+.note-band{
+  background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:14px;
+  padding:18px 22px;margin-bottom:34px;font-size:14.5px;color:#5e4a23;
+  animation:rise .7s .15s cubic-bezier(.2,.7,.2,1) both;
+}
+.note-band b{color:#7a5e1f}
+/* ---------- TOC ---------- */
+.toc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px 30px;margin-bottom:36px}
+.toc h2{font-family:"Shippori Mincho",serif;font-size:16px;color:var(--brand);margin-bottom:16px;letter-spacing:.04em}
+.toc ol{list-style:none;columns:2;column-gap:42px}
+.toc li{margin-bottom:9px;break-inside:avoid}
+.toc a{text-decoration:none;color:var(--ink-soft);font-size:13.5px;display:flex;align-items:baseline;gap:9px;transition:.2s}
+.toc a:hover{color:var(--brand)}
+.toc a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--gold);font-weight:600;min-width:20px}
+/* ---------- sections ---------- */
+section{
+  background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  padding:34px 38px;margin-bottom:22px;
+  box-shadow:0 2px 0 rgba(228,219,201,.5);
+}
+.sec-head{display:flex;align-items:center;gap:16px;margin-bottom:22px;padding-bottom:16px;border-bottom:2px solid var(--line-soft)}
+.sec-num{
+  flex-shrink:0;width:42px;height:42px;border-radius:12px;
+  background:var(--brand);color:#F5F0E4;display:grid;place-items:center;
+  font-family:"JetBrains Mono",monospace;font-weight:600;font-size:17px;
+  box-shadow:0 8px 18px -8px rgba(20,83,75,.6);
+}
+.sec-head h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:23px;color:var(--ink);letter-spacing:.02em}
+h3{font-family:"Shippori Mincho",serif;font-weight:600;font-size:17px;color:var(--brand-deep);margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+h3::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
+p{margin-bottom:13px;color:var(--ink)}
+ul,ol.body{margin:0 0 14px 1.3em}
+li{margin-bottom:7px}
+strong{font-weight:700;color:var(--brand-deep)}
+/* ---------- tables ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:14px 0 18px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13.6px;min-width:440px}
+th{background:var(--brand);color:#F3EEE2;font-weight:600;text-align:left;padding:11px 14px;letter-spacing:.03em;font-size:12.8px;white-space:nowrap}
+td{padding:10px 14px;border-top:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft)}
+tbody tr:nth-child(even){background:#FBF8F1}
+tbody tr:hover{background:var(--brand-soft)}
+td strong,th + td strong{color:var(--brand-deep)}
+.tbl-compact table{font-size:12.8px}
+.tbl-compact td{padding:7px 12px}
+.center{text-align:center}
+/* status badges */
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 11px;border-radius:99px;white-space:nowrap;font-family:"Zen Kaku Gothic New"}
+.pill.yes{background:#E2F1E8;color:var(--ok)}
+.pill.no{background:#F4E5DE;color:var(--no)}
+.pill.code{font-family:"JetBrains Mono",monospace;background:var(--brand-soft);color:var(--brand-deep);font-weight:600}
+/* tip callout */
+.tip{position:relative;background:var(--gold-soft);border-radius:13px;padding:16px 20px 16px 52px;margin:16px 0;font-size:14px;color:#5e4a23;border:1px solid var(--gold-line)}
+.tip::before{content:"💡";position:absolute;left:18px;top:15px;font-size:18px}
+.tip b{color:#7a5e1f}
+/* code */
+pre{background:#16201E;color:#D9E4DF;border-radius:13px;padding:20px 22px;overflow-x:auto;margin:16px 0;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.7;border:1px solid #243430}
+pre .c{color:#7E9C8E}
+pre .k{color:#E0B062}
+/* stars demo */
+.stars{font-size:22px;letter-spacing:4px;margin:2px 0}
+.s-silver{color:#A9A9B0;text-shadow:0 1px 0 #fff}
+.s-gold{color:#D4A02C}
+.s-empty{color:#D8CFBC}
+/* algorithm steps */
+.algo{counter-reset:step;list-style:none;margin:14px 0}
+.algo li{position:relative;padding:12px 16px 12px 54px;background:#FBF8F1;border:1px solid var(--line-soft);border-radius:11px;margin-bottom:9px}
+.algo li::before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:11px;width:26px;height:26px;border-radius:8px;background:var(--brand);color:#F3EEE2;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600}
+/* Q items */
+.qrow td:first-child{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--gold);white-space:nowrap}
+/* footer */
+.foot{text-align:center;color:var(--muted);font-size:13px;margin-top:34px;padding:24px;font-style:italic;font-family:"Shippori Mincho",serif}
+.foot .mark{font-family:"JetBrains Mono",monospace;font-style:normal;letter-spacing:.3em;font-size:11px;color:var(--brand);display:block;margin-bottom:8px}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+section{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+/* ---------- floating TOC ---------- */
+.toc-fab{
+  position:fixed;right:20px;bottom:20px;z-index:120;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 19px;border:none;cursor:pointer;
+  background:var(--brand);color:#F5F0E4;border-radius:99px;
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:14px;
+  box-shadow:0 14px 30px -10px rgba(14,60,54,.65);transition:transform .2s,box-shadow .2s;
+}
+.toc-fab:hover{transform:translateY(-2px);box-shadow:0 18px 36px -10px rgba(14,60,54,.7)}
+.toc-fab svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.toc-overlay{position:fixed;inset:0;background:rgba(18,28,26,.42);z-index:130;opacity:0;visibility:hidden;transition:.28s}
+.toc-overlay.open{opacity:1;visibility:visible}
+.toc-drawer{
+  position:fixed;top:0;right:0;height:100%;width:min(360px,88vw);z-index:140;
+  background:var(--surface);box-shadow:-24px 0 60px -30px rgba(0,0,0,.55);
+  transform:translateX(102%);transition:transform .32s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column;
+}
+.toc-drawer.open{transform:none}
+.toc-drawer .dh{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--line-soft)}
+.toc-drawer .dh h2{font-family:"Shippori Mincho",serif;font-size:18px;color:var(--brand);letter-spacing:.06em}
+.toc-drawer .dh button{background:none;border:none;cursor:pointer;color:var(--muted);font-size:26px;line-height:1;padding:0 4px;transition:.2s}
+.toc-drawer .dh button:hover{color:var(--ink)}
+.toc-drawer .dlist{overflow-y:auto;padding:10px 14px 24px}
+.toc-drawer .dlist a{display:flex;align-items:baseline;gap:11px;text-decoration:none;color:var(--ink-soft);font-size:14px;padding:10px 12px;border-radius:10px;transition:.18s}
+.toc-drawer .dlist a:hover{background:var(--brand-soft);color:var(--brand-deep)}
+.toc-drawer .dlist a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--gold);font-weight:600;min-width:22px}
+@media (max-width:680px){
+  .masthead{padding:30px 22px}.masthead h1{font-size:26px}
+  .masthead::after{font-size:120px;bottom:-26px}
+  section{padding:22px 17px}.meta{grid-template-columns:1fr}
+  .toc ol{columns:1}.sec-head h2{font-size:19px}
+  .sec-head{gap:12px}.sec-num{width:36px;height:36px;font-size:15px;border-radius:10px}
+  .page{padding:22px 12px 90px}
+  h3{font-size:16px}.tip{padding:14px 16px 14px 46px}
+  .topbar{height:54px;padding:0 14px}.topbar .brand{font-size:15px}
+  .toc-fab{right:14px;bottom:14px;padding:12px 17px;font-size:13.5px}
+}
+@media print{
+  body{background:#fff;padding:0}
+  .topbar,.toc-fab,.toc-overlay,.toc-drawer{display:none!important}
+  .masthead{box-shadow:none;color:#0E3C36;background:none;border-bottom:3px solid var(--brand);border-radius:0}
+  .masthead::after{display:none}.masthead .eyebrow,.masthead h1,.masthead .lead{color:var(--ink)}
+  section,.meta,.toc,.note-band{box-shadow:none;break-inside:avoid;animation:none}
+  *{animation:none!important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top">快単<span class="en">KAITAN</span></a>
+  <nav>
+    <a class="cur" href="#top">01 詳細仕様書</a>
+    <a href="02_快単_画面遷移図_v1.0.html">02 画面遷移図</a>
+    <a href="03_快単_ER図_v1.0.html">03 ER図</a>
+  </nav>
+</header>
+<div class="page" id="top">
+
+  <header class="masthead">
+    <div class="eyebrow">快単 · English Vocabulary App</div>
+    <h1>詳細仕様書<br><span style="font-size:.62em;font-weight:600">MVP / First stage</span></h1>
+    <p class="lead">教材「快単」の学習メソッドを忠実にアプリ化するための、開発着手に足る粒度の仕様確定書です。本書・画面遷移図・ER図の3点をもって仕様確定といたします。</p>
+  </header>
+
+  <dl class="meta">
+    <div><dt>文書名</dt><dd>快単 英単語記憶アプリ 詳細仕様書</dd></div>
+    <div><dt>バージョン</dt><dd>v1.0（仕様確定フェーズ・ご確認用ドラフト）</dd></div>
+    <div><dt>作成日</dt><dd>2026年5月25日</dd></div>
+    <div><dt>作成</dt><dd>AKAME（開発担当）</dd></div>
+    <div><dt>宛先</dt><dd>一般社団法人KAI　菊地雅文 様</dd></div>
+    <div><dt>対象範囲</dt><dd>MVP版（First stage 完成版）</dd></div>
+  </dl>
+
+  <div class="note-band">
+    <b>本書の位置づけ</b> ── 解説書・基本データ・これまでのお打ち合わせ内容を、開発に着手できる粒度まで具体化した「仕様確定書」です。本書・画面遷移図・ER図の3点について菊地様のご承認をいただいた時点を<b>仕様確定</b>とし、実装フェーズに着手いたします。技術用語には注釈（💡）を添えています。末尾「<b>18. ご確認事項</b>」は、着手前に必ずご回答をお願いしたい項目です。
+  </div>
+
+  <nav class="toc">
+    <h2>目次</h2>
+    <ol>
+      <li><a href="#s1"><span class="n">01</span>プロジェクト概要</a></li>
+      <li><a href="#s2"><span class="n">02</span>用語定義</a></li>
+      <li><a href="#s3"><span class="n">03</span>機能一覧（MVP範囲）</a></li>
+      <li><a href="#s4"><span class="n">04</span>画面仕様</a></li>
+      <li><a href="#s5"><span class="n">05</span>満点法ロジック詳細</a></li>
+      <li><a href="#s6"><span class="n">06</span>「初回OKを除く」仕様</a></li>
+      <li><a href="#s7"><span class="n">07</span>ブロック管理仕様</a></li>
+      <li><a href="#s8"><span class="n">08</span>星評価システム仕様</a></li>
+      <li><a href="#s9"><span class="n">09</span>学習履歴・データ永続化</a></li>
+      <li><a href="#s10"><span class="n">10</span>単語データ仕様</a></li>
+      <li><a href="#s11"><span class="n">11</span>音声仕様</a></li>
+      <li><a href="#s12"><span class="n">12</span>非機能要件</a></li>
+      <li><a href="#s13"><span class="n">13</span>技術構成（概要）</a></li>
+      <li><a href="#s14"><span class="n">14</span>テスト・品質保証</a></li>
+      <li><a href="#s15"><span class="n">15</span>納品物</a></li>
+      <li><a href="#s16"><span class="n">16</span>対象外・将来拡張</a></li>
+      <li><a href="#s17"><span class="n">17</span>ストア申請（参考）</a></li>
+      <li><a href="#s18"><span class="n">18</span>ご確認事項</a></li>
+      <li><a href="#s19"><span class="n">19</span>スケジュール（目安）</a></li>
+      <li><a href="#s20"><span class="n">20</span>変更履歴</a></li>
+    </ol>
+  </nav>
+
+  <section id="s1">
+    <div class="sec-head"><div class="sec-num">01</div><h2>プロジェクト概要</h2></div>
+    <p>教材「快単」の学習メソッドを忠実にアプリ化し、英単語を短時間で<strong>「絶対記憶（見聞きした瞬間に意味が出てくる状態）」</strong>にすることを目的とした、<strong>スマートフォン用学習アプリ</strong>である。</p>
+    <ul>
+      <li>対応OS：iOS（14以降）／ Android（8.0 / API 23 以降）</li>
+      <li>提供形態：<strong>端末内完結・オフライン動作・サーバ利用なし</strong></li>
+      <li>収録語数：約 <strong>2,201語</strong>（First stage 見出し語）</li>
+      <li>開発：Flutter によるクロスプラットフォーム開発</li>
+    </ul>
+    <p>MVP版では <strong>First stage</strong> を完成させる。Second stage（2番目以降の意味・派生語・反対語、医系単語、育成キャラクター）は枠のみ用意し、本MVPの対象外とする（「16. 対象外・将来拡張」参照）。</p>
+  </section>
+
+  <section id="s2">
+    <div class="sec-head"><div class="sec-num">02</div><h2>用語定義</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:24%">用語</th><th>定義</th></tr></thead>
+      <tbody>
+        <tr><td><strong>満点法（まんてんほう）</strong></td><td>OKした単語を出題から除外し、再チェックした単語のみを次の巡で再出題することを、全単語OKになるまで繰り返す学習方式。本アプリの中核ロジック。</td></tr>
+        <tr><td><strong>巡目（じゅんめ）</strong></td><td>満点法における出題の周回。1巡目＝最初の出題、2巡目＝1巡目で再チェックした語のみ、…。</td></tr>
+        <tr><td><strong>ブロック</strong></td><td>2,201語を48語前後ごとに区切った学習単位。全46ブロック。</td></tr>
+        <tr><td><strong>OK</strong></td><td>意味が分かった単語に対する判定。出題リストから除外される。</td></tr>
+        <tr><td><strong>再チェック</strong></td><td>意味が分からなかった単語に対する判定。次の巡で再出題される。</td></tr>
+        <tr><td><strong>初回OKを除く</strong></td><td>各ブロックに最初に取り組んだ際にOKした単語を除外して出題する開始モード。</td></tr>
+        <tr><td><strong>回転／ラップ</strong></td><td>指定範囲の全単語が全OKになり指定範囲終了に至ること。星評価の単位。</td></tr>
+        <tr><td><strong>ステージ</strong></td><td>First stage（見出し語の中心的意味）／ Second stage（2番目以降の意味・派生語等）。MVPはFirst stageのみ。</td></tr>
+        <tr><td><strong>TTS</strong></td><td>💡 Text-to-Speech。端末標準の音声合成機能で英単語を読み上げる仕組み。</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s3">
+    <div class="sec-head"><div class="sec-num">03</div><h2>機能一覧（MVP範囲）</h2></div>
+    <div class="tbl-wrap tbl-compact"><table>
+      <thead><tr><th style="width:64px">#</th><th>機能</th><th class="center" style="width:70px">MVP</th><th style="width:33%">備考</th></tr></thead>
+      <tbody>
+        <tr><td>F-01</td><td>スタート画面（ステージ選択）</td><td class="center"><span class="pill yes">✓</span></td><td>Second stageボタンは「準備中」表示</td></tr>
+        <tr><td>F-02</td><td>範囲指定画面（46ブロック選択・状態管理）</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-03</td><td>複数ブロック選択 / vol一括選択 / リセット</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-04</td><td>2つの開始モード（スタート／初回OKを除く）</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-05</td><td>問題画面（単語・品詞・問題番号・カウンタ表示）</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-06</td><td>TTS発音再生（スピーカーボタンで再生）</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-07</td><td>解答画面（意味・覚え方・例文・品詞・カタカナ・語源）</td><td class="center"><span class="pill yes">✓</span></td><td>イラストは将来対応</td></tr>
+        <tr><td>F-08</td><td>OK／再チェック判定と即時遷移</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-09</td><td>満点法ロジック（巡目管理・除外・再出題）</td><td class="center"><span class="pill yes">✓</span></td><td>中核</td></tr>
+        <tr><td>F-10</td><td>結果表示画面（巡目ごとの結果・次に進む）</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-11</td><td>指定範囲終了画面（お祝い演出 3〜5秒）</td><td class="center"><span class="pill yes">✓</span></td><td>演出形式は要確認</td></tr>
+        <tr><td>F-12</td><td>学習履歴の永続化（再起動後も状態保持）</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-13</td><td>ブロック完了状態の保存・色変化</td><td class="center"><span class="pill yes">✓</span></td><td></td></tr>
+        <tr><td>F-14</td><td>星評価システム（5回転で銀・10回転で金）</td><td class="center"><span class="pill yes">✓</span></td><td>MVP同梱</td></tr>
+        <tr><td>F-15</td><td>単語データ組み込み（2,201語）</td><td class="center"><span class="pill yes">✓</span></td><td>Excel＋PDF抽出</td></tr>
+        <tr><td>F-16</td><td>育成キャラクター（⓪選択画面・成長演出）</td><td class="center"><span class="pill no">×</span></td><td>Second stage</td></tr>
+        <tr><td>F-17</td><td>Second stage（2番目意味・派生語・反対語・医系単語）</td><td class="center"><span class="pill no">×</span></td><td>別契約</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s4">
+    <div class="sec-head"><div class="sec-num">04</div><h2>画面仕様</h2></div>
+    <p>各画面について「目的／表示要素／操作／状態／遷移」を定義する。画面番号は解説書の丸数字に準拠する。レイアウトは<strong>片手操作・3秒チェックを最優先</strong>とし、主要ボタンは親指可動域（画面下部）に配置する。</p>
+
+    <h3>4.1　① スタート画面</h3>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>学習するステージを選択する起点画面。</td></tr>
+      <tr><td><strong>表示要素</strong></td><td>アプリタイトル／ロゴ、First stage ボタン（5つの星表示を含む）、Second stage ボタン（「準備中」表示・5つの星表示枠）。</td></tr>
+      <tr><td><strong>操作</strong></td><td>First stage タップ → ② 範囲指定画面へ。Second stage タップ → 「準備中」トースト表示（MVPでは遷移しない）。</td></tr>
+      <tr><td><strong>状態</strong></td><td>各ステージボタンの下に星5個を表示（「8. 星評価」参照）。</td></tr>
+      <tr><td><strong>遷移</strong></td><td>→ ② First stage 範囲指定画面。</td></tr>
+    </tbody></table></div>
+    <div class="tip">Second stageは枠と「準備中」表示のみ用意し、将来の拡張をユーザーに示す（教材販売時のアピールにもなる）。</div>
+
+    <h3>4.2　②③ 範囲指定画面</h3>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>学習対象のブロックを選択し、開始モードを決めて出題を開始する。</td></tr>
+      <tr><td><strong>表示要素</strong></td><td>46ブロックのボタンをグリッド配置（快単vol.1＝ブロック1〜23、vol.2＝ブロック24〜46）。各ブロックに番号と語ID範囲（例：「7：289〜336」）を表示。vol.1全体／vol.2全体の<strong>一括選択ボタン</strong>。スタート／初回OKを除く の開始ボタン。リセット ボタン。</td></tr>
+      <tr><td><strong>操作</strong></td><td>・ブロックをタップで選択／選択解除（順不同・複数可）<br>・一括選択ボタンで該当vol全ブロックを一度に選択<br>・リセット：選択状態と当該範囲の学習記録をクリアし、全ブロックを白に戻す<br>・スタート：選択範囲の<strong>全単語</strong>を出題（前回記録をリセット）<br>・初回OKを除く：各ブロックで初回にOKした単語を除外し、再チェック対象のみ出題</td></tr>
+      <tr><td><strong>状態（色）</strong></td><td><strong>白＝未学習／リセット後</strong>、<strong>青＝選択中</strong>、<strong>薄い色（うす青）＝全OK完了</strong>。完了済み（薄色）ブロックと未学習（白）ブロックを同時選択可能。</td></tr>
+      <tr><td><strong>遷移</strong></td><td>スタート または 初回OKを除く → ⑥ 問題画面。</td></tr>
+    </tbody></table></div>
+    <p style="margin-top:6px"><strong>補足：開始モードの動作差</strong></p>
+    <ul>
+      <li><strong>スタート</strong>：選択範囲の記録を消去し、全単語を1巡目として出題する。</li>
+      <li><strong>初回OKを除く</strong>：各ブロックに最初に取り組んだ際にOKした単語を出題から除外する。白ブロック（学習履歴なし）にこのモードを適用した場合は、OK=0として全単語が出題される。</li>
+    </ul>
+
+    <h3>4.3　⑥ 問題画面</h3>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>単語を提示し、意味を想起させる。3秒以内の判断を促す。</td></tr>
+      <tr><td><strong>表示要素</strong></td><td>・<strong>単語</strong>（大きく表示）・<strong>品詞</strong>（他／自／名／形／副／前／接／間。複数品詞があれば併記）・<strong>問題番号</strong>（見出し№、例：№0341）・ステージ名（First stage）・<strong>スピーカーボタン</strong>（TTS再生）・意味・例文 ボタン・画面下部の<strong>カウンタ</strong>：残/総数・OK数・再チェック数（リアルタイム更新）</td></tr>
+      <tr><td><strong>操作</strong></td><td>・画面表示時に発音音声を自動再生・スピーカーボタンで再度再生・意味・例文 タップ → ⑦ 解答画面。</td></tr>
+      <tr><td><strong>状態</strong></td><td>カウンタは当該巡の進捗をリアルタイム反映。</td></tr>
+      <tr><td><strong>遷移</strong></td><td>→ ⑦ 解答画面。</td></tr>
+    </tbody></table></div>
+
+    <h3>4.4　⑦ 解答画面</h3>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>意味・覚え方を提示し、OK／再チェックを判定させる。</td></tr>
+      <tr><td><strong>表示要素</strong></td><td>・単語、品詞、カタカナ読み・<strong>意味</strong>（意味1・意味2）・<strong>覚え方</strong>（ゴロ／語源／カタカナ／イメージ）・<strong>語源</strong>（源タグの内容、ある場合）・<strong>イラスト</strong>（💡 将来対応。MVPでは枠のみ／非表示）・<strong>例文</strong>（英・日。画面末尾に表示）・OK ボタン／再チェック ボタン（大きく配置）・画面下部の同カウンタ</td></tr>
+      <tr><td><strong>操作</strong></td><td>・OK：当該単語を出題リストから除外し、即座に次の単語の⑥問題画面へ・再チェック：当該単語を次巡の再出題リストに残し、即座に次の単語の⑥問題画面へ・例文を参照してからOK／再チェックを押すことも可能。</td></tr>
+      <tr><td><strong>状態</strong></td><td>当該巡の最後の単語に対する判定後は、結果表示画面へ自動遷移（「5. 満点法ロジック」参照）。</td></tr>
+      <tr><td><strong>遷移</strong></td><td>→ ⑥ 問題画面（次の単語）／ 当該巡終了時 → ⑧ 結果表示画面。</td></tr>
+    </tbody></table></div>
+    <div class="tip">操作速度を最大化するため、問題⇄解答の往復は<b>画面遷移アニメーションを最短（100ms以下／実質無し）</b>とする。</div>
+
+    <h3>4.5　⑧⑩ 結果表示画面</h3>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>当該巡の結果を提示し、次巡または範囲終了へ導く。</td></tr>
+      <tr><td><strong>表示要素</strong></td><td>今回の結果：総数・OK数・再チェック数。次に進む ボタン。範囲再指定 ボタン。</td></tr>
+      <tr><td><strong>操作</strong></td><td>・次に進む：再チェックした単語のみで次巡を構成し、⑥問題画面へ・範囲再指定：②範囲指定画面へ戻る。</td></tr>
+      <tr><td><strong>状態</strong></td><td>当該巡で再チェックが0件（全OK）の場合は、本画面を経由せず（または経由後自動で）⑪ 指定範囲終了画面へ移行する。</td></tr>
+      <tr><td><strong>遷移</strong></td><td>→ ⑥ 問題画面（次巡）／ ⑪ 指定範囲終了画面（全OK時）／ ② 範囲指定画面。</td></tr>
+    </tbody></table></div>
+
+    <h3>4.6　⑪ 指定範囲終了画面</h3>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>範囲達成を祝福し、学習状態を確定する。</td></tr>
+      <tr><td><strong>表示要素</strong></td><td>「頑張った！おめでとう！」等のメッセージ、<strong>お祝い演出（3〜5秒）</strong>。</td></tr>
+      <tr><td><strong>操作</strong></td><td>演出再生後、自動的に①スタート画面へ戻る。</td></tr>
+      <tr><td><strong>状態</strong></td><td>・選択していたブロックの色を<strong>完了（薄色）</strong>に変更・<strong>前回1巡目の再チェック記録は保持</strong>する（「初回OKを除く」用）・46ブロック全完了時も①スタート画面へ戻る（星評価が1回転分進む。「8. 星評価」参照）。</td></tr>
+      <tr><td><strong>遷移</strong></td><td>→ ① スタート画面（自動）。</td></tr>
+    </tbody></table></div>
+    <div class="tip">お祝い演出は、軽量・高画質で実装できる<b>アニメーション（Rive/Lottie）</b>を推奨。動画ファイル（mp4）をご支給いただく場合はそれを再生する形にも対応可能（ご確認事項 Q-5）。</div>
+  </section>
+
+  <section id="s5">
+    <div class="sec-head"><div class="sec-num">05</div><h2>満点法ロジック詳細（中核）</h2></div>
+    <p>本アプリの価値を決定する中核ロジック。明確なステートマシン（💡 状態と遷移が定義された処理機構）として実装し、全パターンを検証する。</p>
+    <h3>5.1　基本アルゴリズム</h3>
+    <ol class="algo">
+      <li>出題リスト ← 選択範囲の対象単語（モードにより初回OK語を除外）</li>
+      <li>巡目 ← 1</li>
+      <li>出題リストをランダム順に並べ、1単語ずつ問題画面に出題</li>
+      <li>各単語について判定：　OK → 当該単語をリストから除外／　再チェック → 「次巡リスト」に追加</li>
+      <li>当該巡の全単語を出題し終えたら、結果表示画面を表示</li>
+      <li>次巡リストが空（再チェック0件）→ 指定範囲終了画面へ（学習完了）／　残あり → 出題リスト ← 次巡リスト、巡目+1、③へ戻る</li>
+    </ol>
+    <h3>5.2　巡目進行の例（解説書④〜⑩：ブロック7+8＝96語）</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>巡目</th><th class="center">出題数</th><th class="center">OK</th><th class="center">再チェック</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1巡目</strong></td><td class="center">96</td><td class="center">56</td><td class="center">40</td></tr>
+        <tr><td><strong>2巡目</strong></td><td class="center">40</td><td class="center">26</td><td class="center">14</td></tr>
+        <tr><td><strong>3巡目</strong></td><td class="center">14</td><td class="center">10</td><td class="center">4</td></tr>
+        <tr><td><strong>4巡目</strong></td><td class="center">4</td><td class="center">4</td><td class="center">0 → <strong>全OK・指定範囲終了</strong></td></tr>
+      </tbody>
+    </table></div>
+    <h3>5.3　検証観点（テスト項目）</h3>
+    <ul>
+      <li>巡目進行（多巡にわたる除外・再構成の正確性）</li>
+      <li>ランダム出題（同一巡内で重複なく全単語が出題されること）</li>
+      <li>全OKでの自動遷移</li>
+      <li>アプリ再起動後の巡の途中復帰</li>
+      <li>複数ブロック選択時／白・薄色ブロック混在時の動作</li>
+      <li>「初回OKを除く」適用時の動作</li>
+    </ul>
+  </section>
+
+  <section id="s6">
+    <div class="sec-head"><div class="sec-num">06</div><h2>「初回OKを除く」仕様</h2></div>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:22%"><strong>目的</strong></td><td>既に習得済み（初回OK）の単語を省き、未習得語に集中して復習効率を高める。</td></tr>
+      <tr><td><strong>定義</strong></td><td>各ブロックに<strong>最初に取り組んだ巡（初回）</strong>で OK と判定した単語を、次回以降の出題から除外する。</td></tr>
+      <tr><td><strong>データ</strong></td><td>単語ごとに「初回判定結果（<span class="pill code">first_round_result</span>）」を永続化する（ER図 word_progress 参照）。</td></tr>
+      <tr><td><strong>白ブロック適用時</strong></td><td>学習履歴がないため除外対象なし。OK=0としてブロック内全単語を出題する。</td></tr>
+      <tr><td><strong>保持タイミング</strong></td><td>⑪ 指定範囲終了時、前回1巡目の再チェック記録を保持する（解説書⑨）。</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section id="s7">
+    <div class="sec-head"><div class="sec-num">07</div><h2>ブロック管理仕様</h2></div>
+    <h3>7.1　ブロック⇔語ID対応（確定値）</h3>
+    <ul>
+      <li><strong>快単 vol.1 ＝ ブロック 1〜23 ＝ 語ID 1〜1100</strong></li>
+      <li><strong>快単 vol.2 ＝ ブロック 24〜46 ＝ 語ID 1101〜2201</strong></li>
+      <li>1ブロック＝原則48語。末尾のみ短い：<strong>ブロック23＝1057〜1100（44語）</strong>、<strong>ブロック46＝2157〜2201（45語）</strong>。</li>
+    </ul>
+    <p style="margin-top:8px"><strong>全46ブロック対応表</strong></p>
+    <div class="tbl-wrap tbl-compact"><table>
+      <thead><tr><th>Bk</th><th>語ID</th><th>Bk</th><th>語ID</th><th>Bk</th><th>語ID</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1–48</td><td>17</td><td>769–816</td><td>33</td><td>1533–1580</td></tr>
+        <tr><td>2</td><td>49–96</td><td>18</td><td>817–864</td><td>34</td><td>1581–1628</td></tr>
+        <tr><td>3</td><td>97–144</td><td>19</td><td>865–912</td><td>35</td><td>1629–1676</td></tr>
+        <tr><td>4</td><td>145–192</td><td>20</td><td>913–960</td><td>36</td><td>1677–1724</td></tr>
+        <tr><td>5</td><td>193–240</td><td>21</td><td>961–1008</td><td>37</td><td>1725–1772</td></tr>
+        <tr><td>6</td><td>241–288</td><td>22</td><td>1009–1056</td><td>38</td><td>1773–1820</td></tr>
+        <tr><td>7</td><td>289–336</td><td>23</td><td>1057–1100</td><td>39</td><td>1821–1868</td></tr>
+        <tr><td>8</td><td>337–384</td><td>24</td><td>1101–1148</td><td>40</td><td>1869–1916</td></tr>
+        <tr><td>9</td><td>385–432</td><td>25</td><td>1149–1196</td><td>41</td><td>1917–1964</td></tr>
+        <tr><td>10</td><td>433–480</td><td>26</td><td>1197–1244</td><td>42</td><td>1965–2012</td></tr>
+        <tr><td>11</td><td>481–528</td><td>27</td><td>1245–1292</td><td>43</td><td>2013–2060</td></tr>
+        <tr><td>12</td><td>529–576</td><td>28</td><td>1293–1340</td><td>44</td><td>2061–2108</td></tr>
+        <tr><td>13</td><td>577–624</td><td>29</td><td>1341–1388</td><td>45</td><td>2109–2156</td></tr>
+        <tr><td>14</td><td>625–672</td><td>30</td><td>1389–1436</td><td>46</td><td>2157–2201</td></tr>
+        <tr><td>15</td><td>673–720</td><td>31</td><td>1437–1484</td><td></td><td></td></tr>
+        <tr><td>16</td><td>721–768</td><td>32</td><td>1485–1532</td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+    <h3>7.2　ブロックの状態</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>状態</th><th>色</th><th>意味</th></tr></thead>
+      <tbody>
+        <tr><td><strong>未学習</strong></td><td>白</td><td>未着手、またはリセット後</td></tr>
+        <tr><td><strong>選択中</strong></td><td>青</td><td>範囲指定で選択された状態</td></tr>
+        <tr><td><strong>完了</strong></td><td>薄色（うす青）</td><td>当該ブロックの全単語がOKになった状態</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s8">
+    <div class="sec-head"><div class="sec-num">08</div><h2>星評価システム仕様（MVP同梱）</h2></div>
+    <div class="tbl-wrap"><table><tbody>
+      <tr><td style="width:18%"><strong>目的</strong></td><td>繰り返し学習（推奨5〜10回転）の達成感を可視化し、継続を促す。</td></tr>
+      <tr><td><strong>表示</strong></td><td>各ステージボタンの下に星5個。</td></tr>
+      <tr><td><strong>定義</strong></td><td>指定範囲の全単語が全OKになり指定範囲終了に至ることを「1回転」とする（46ブロック全完了で1回転）。</td></tr>
+      <tr><td><strong>変化</strong></td><td>・<strong>5回転で星5個すべてが銀</strong>（1回転ごとに左から1個ずつ銀化）・<strong>6回転目で1個目が金</strong>に変わり、<strong>10回転で星5個すべてが金</strong>。</td></tr>
+      <tr><td><strong>データ</strong></td><td>ステージごとに回転数を保存（ER図 <span class="pill code">stage_progress</span>）。</td></tr>
+      <tr><td><strong>演出</strong></td><td>星の色変化アニメーション（白→銀→金）。</td></tr>
+    </tbody></table></div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;margin-top:6px;padding:16px 20px;background:#FBF8F1;border:1px solid var(--line-soft);border-radius:12px">
+      <div><div style="font-size:12px;color:var(--muted);margin-bottom:2px">開始時（0回転）</div><div class="stars"><span class="s-empty">★★★★★</span></div></div>
+      <div><div style="font-size:12px;color:var(--muted);margin-bottom:2px">5回転（銀コンプ）</div><div class="stars"><span class="s-silver">★★★★★</span></div></div>
+      <div><div style="font-size:12px;color:var(--muted);margin-bottom:2px">10回転（金コンプ）</div><div class="stars"><span class="s-gold">★★★★★</span></div></div>
+    </div>
+    <div class="tip">「全ブロック完了＝1回転」の定義の詳細（部分範囲のみの完了を回転に数えるか）はご確認事項 <b>Q-3</b> 参照。</div>
+  </section>
+
+  <section id="s9">
+    <div class="sec-head"><div class="sec-num">09</div><h2>学習履歴・データ永続化仕様</h2></div>
+    <p>端末内データベース（💡 SQLite）に保存し、アプリを閉じても学習状態を完全に維持する。詳細は ER図 を参照。保存対象は以下のとおり。</p>
+    <ul>
+      <li>ブロックごとの状態（未学習／完了、完了日時）</li>
+      <li>単語ごとの学習履歴（初回判定、直近結果、試行回数）</li>
+      <li>学習セッション（選択ブロック、現在の巡目、各単語の巡内結果）— <strong>中断・再開に対応</strong></li>
+      <li>ステージごとの回転数（星評価）</li>
+      <li>設定（選択中のステージ等）</li>
+    </ul>
+    <p>データは2つに分離して管理する：<strong>①単語マスタ（読み取り専用・アプリに同梱）</strong> と <strong>②学習履歴（書き込み可能）</strong>。これにより、将来「英検1級3000語」等の教材を追加する際は単語マスタを差し替えるだけで済み、利用者の学習履歴は影響を受けない（保守性・拡張性のための設計）。</p>
+  </section>
+
+  <section id="s10">
+    <div class="sec-head"><div class="sec-num">10</div><h2>単語データ仕様</h2></div>
+    <h3>10.1　データ項目（基本データExcel準拠）</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>項目</th><th>内容</th><th class="center" style="width:96px">MVP表示</th></tr></thead>
+      <tbody>
+        <tr><td>見出し№</td><td>語ID（0001〜2201）</td><td class="center">—</td></tr>
+        <tr><td>単語</td><td>英単語</td><td class="center"><span class="pill yes">✓</span></td></tr>
+        <tr><td>品詞1／意味1</td><td>主たる品詞・意味</td><td class="center"><span class="pill yes">✓</span></td></tr>
+        <tr><td>品詞2／意味2</td><td>副次的な品詞・意味（任意）</td><td class="center"><span class="pill yes">✓</span></td></tr>
+        <tr><td>例文／例文日本語訳</td><td>英文・和訳</td><td class="center"><span class="pill yes">✓</span></td></tr>
+        <tr><td>記憶法（種別＋本文）</td><td>ゴロ／語源／カタカナ／イメージ</td><td class="center"><span class="pill yes">✓</span></td></tr>
+        <tr><td>カタカナ読み</td><td>発音のカタカナ表記</td><td class="center"><span class="pill yes">✓</span></td></tr>
+        <tr><td>画像ファイル名</td><td>覚え方イラスト（将来対応）</td><td class="center">将来</td></tr>
+        <tr><td>（Second stage）問題1〜5／解答1〜5</td><td>2番目意味・派生語・反対語等</td><td class="center"><span class="pill no">×</span></td></tr>
+      </tbody>
+    </table></div>
+    <h3>10.2　データ供給と組み込み</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>区分</th><th>内容</th><th>供給元</th></tr></thead>
+      <tbody>
+        <tr><td>基本項目（単語・品詞・例文等）</td><td>Excel形式</td><td>菊地様（5月末予定）</td></tr>
+        <tr><td>意味・覚え方・語源・発音記号</td><td>製本PDF（アウトライン化）から弊方で抽出</td><td>菊地様→弊方抽出</td></tr>
+        <tr><td>覚え方イラスト（2,201枚）</td><td>画像ファイル</td><td>菊地様（Drive/Dropbox）</td></tr>
+        <tr><td>発音音声</td><td>端末TTSを使用（音声ファイル不要）</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><b>データ品質に関する方針</b>：製本PDFはテキストがアウトライン化されているため、AIによる画像解析で抽出する。全自動はリスクがあるため、<b>100語程度のサンプルを菊地様にご確認いただき、精度ご納得後に全件抽出</b>する工程を設ける。</div>
+  </section>
+
+  <section id="s11">
+    <div class="sec-head"><div class="sec-num">11</div><h2>音声仕様</h2></div>
+    <ul>
+      <li>MVPは<strong>端末TTS</strong>（💡 iOS／Android標準の音声合成）で英単語を読み上げる。音声ファイルは同梱しない（アプリ容量と保守性のため）。</li>
+      <li>問題画面表示時に自動再生。スピーカーボタンで再再生。</li>
+      <li>将来、ご支給の録音音源（例：kai-julie 音声）への差し替えにも対応できるよう、音声機能は内部的に分離して実装する。</li>
+    </ul>
+  </section>
+
+  <section id="s12">
+    <div class="sec-head"><div class="sec-num">12</div><h2>非機能要件</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:22%">区分</th><th>要件</th></tr></thead>
+      <tbody>
+        <tr><td><strong>性能</strong></td><td>1単語のチェック3秒以内・再確認7秒以内を実現する操作性。問題⇄解答の遷移は実質無遅延（100ms以下）。</td></tr>
+        <tr><td><strong>オフライン</strong></td><td>全機能がオフラインで動作。ネットワーク不要。</td></tr>
+        <tr><td><strong>プライバシー</strong></td><td>個人情報・利用データを外部送信しない（<strong>サーバ・解析ツール不使用</strong>）。プライバシーポリシーは「データ収集なし」の最小構成。</td></tr>
+        <tr><td><strong>対応OS</strong></td><td>iOS 14以降／Android 8.0（API 23）以降。</td></tr>
+        <tr><td><strong>可搬性・保守性</strong></td><td>クリーンアーキテクチャ（💡 表示・ロジック・データの3層分離）。第三者開発者が短期間で把握できる構造。日本語コメント・設計ドキュメント整備。</td></tr>
+        <tr><td><strong>データ堅牢性</strong></td><td>スキーマ確定後の変更でも学習履歴が失われないマイグレーション設計。</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s13">
+    <div class="sec-head"><div class="sec-num">13</div><h2>技術構成（概要）</h2></div>
+    <p>技術に明るくない方向けの要点と、その採用根拠を簡潔に記載します。</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>領域</th><th>採用</th><th>根拠（要点）</th></tr></thead>
+      <tbody>
+        <tr><td>開発基盤</td><td><strong>Flutter</strong>（iOS/Android共通）</td><td>1つのコードで両OS対応、ご要望どおり</td></tr>
+        <tr><td>データベース</td><td><strong>SQLite（drift）</strong></td><td>「初回OKを除く」等の関係検索に最適・実績豊富</td></tr>
+        <tr><td>データ構成</td><td>単語マスタ（同梱・読取専用）＋学習履歴（書込可）の分離</td><td>教材差し替え時も履歴を守るため</td></tr>
+        <tr><td>音声</td><td>端末TTS</td><td>音声ファイル不要・容量節約</td></tr>
+        <tr><td>お祝い・将来のキャラ演出</td><td>Rive／Lottie（軽量アニメ）</td><td>容量小・高画質・キャラ成長表現に好適</td></tr>
+        <tr><td>外部サーバ/解析</td><td><strong>使用しない</strong></td><td>「サーバ利用なし」「オフライン」のご要件を厳守</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s14">
+    <div class="sec-head"><div class="sec-num">14</div><h2>テスト・品質保証</h2></div>
+    <ul>
+      <li><strong>単体テスト</strong>：満点法ロジックを中心に全パターンを自動テスト。</li>
+      <li><strong>実機テスト</strong>：iOS／Android 各複数バージョンで動作確認。</li>
+      <li><strong>データ整合性テスト</strong>：抽出データの空欄・文字化け・形式異常の自動検知。</li>
+      <li><strong>速度確認</strong>：問題⇄解答の遷移・TTS応答が要件を満たすことを実機で確認。</li>
+    </ul>
+  </section>
+
+  <section id="s15">
+    <div class="sec-head"><div class="sec-num">15</div><h2>納品物</h2></div>
+    <ul>
+      <li>Flutter ソースコード一式（GitHubプライベートリポジトリ、所有権はKAI様へ譲渡）</li>
+      <li>iOS／Android ビルド</li>
+      <li>単語データ（組み込み済み）および抽出スクリプト</li>
+      <li>ER図・画面遷移図・本仕様書・アーキテクチャ説明</li>
+      <li>簡易マニュアル（README）</li>
+      <li>ストア申請用素材（アイコン、スクリーンショット等）</li>
+    </ul>
+  </section>
+
+  <section id="s16">
+    <div class="sec-head"><div class="sec-num">16</div><h2>対象外・将来拡張（MVP外）</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:24%">項目</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Second stage</strong></td><td>2番目以降の意味・派生語（品詞）・反対語の出題、医系単語ブロック（100語・ランダム）。見出し語2,201中約1,000語が対象。UI/ロジックはFirst stageと共通。本MVPでは枠と「準備中」表示のみ。</td></tr>
+        <tr><td><strong>育成キャラクター</strong></td><td>⓪キャラ選択画面、達成回数（5/20/50/80/120/160/200/250/300回）に応じた成長演出、⑪終了画面での登場、リセット導線。Second stage時に実装予定。</td></tr>
+        <tr><td><strong>英検1級3000語・熟語508・文法教材</strong></td><td>単語マスタ差し替えによる教材シリーズ展開。</td></tr>
+      </tbody>
+    </table></div>
+    <p>設計段階からこれらの拡張を見越し、<strong>単語データの差し替えだけで新教材を追加できる構造</strong>とする。</p>
+  </section>
+
+  <section id="s17">
+    <div class="sec-head"><div class="sec-num">17</div><h2>ストア申請（参考）</h2></div>
+    <ul>
+      <li>開発者アカウントは「一般社団法人KAI」名義での開設を推奨（アプリ所有権の帰属のため）。</li>
+      <li>費用：Apple Developer Program $99/年、Google Play Developer $25/一度きり（菊地様ご負担）。</li>
+      <li>アイコン・スクリーンショット・掲載文・プライバシーポリシー作成、審査・リジェクト対応は本見積り内で対応。</li>
+    </ul>
+  </section>
+
+  <section id="s18">
+    <div class="sec-head"><div class="sec-num">18</div><h2>ご確認事項（着手前にご回答をお願いします）</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:58px">#</th><th>確認事項</th><th style="width:26%">弊方の推奨</th></tr></thead>
+      <tbody>
+        <tr class="qrow"><td>Q-1</td><td>基本データ（Excel）の全2,201語版のご支給時期。</td><td>5月末で承知。形式は現行Excelで可。</td></tr>
+        <tr class="qrow"><td>Q-2</td><td><strong>ブロック番号の定義</strong>：基本データExcelの「P番号」列は、解説書の46ブロック区分（48語区切り）と一致しません（サンプルではP番号1＝46語、P番号2＝50語）。アプリのブロック分けは<strong>解説書の語ID範囲（7.1）に従い、語IDから自動算出</strong>する方針でよろしいでしょうか。</td><td>語IDから算出を推奨。</td></tr>
+        <tr class="qrow"><td>Q-3</td><td>星評価の「1回転」の定義：<strong>46ブロック全完了</strong>で1回転という理解で正しいでしょうか。部分範囲のみの完了の扱いをご教示ください。</td><td>46ブロック全完了＝1回転を推奨。</td></tr>
+        <tr class="qrow"><td>Q-4</td><td>Second stageの問題タグ（名/形/動/類/反/塾 等）に表記揺れがあります。正規化対応表を弊方で作成しご確認いただく形でよろしいでしょうか（実装はSecond stageですが、データ設計に影響）。</td><td>弊方作成→ご確認を推奨。</td></tr>
+        <tr class="qrow"><td>Q-5</td><td>⑪お祝い演出は、弊方でアニメーション案を作成しますか／菊地様が動画（mp4）をご準備されますか。</td><td>弊方でアニメ案作成を推奨。</td></tr>
+        <tr class="qrow"><td>Q-6</td><td>覚え方イラスト2,201枚の供給方法・命名規則（例：0001.jpeg）。MVPでは「将来対応」枠とし、供給後に有効化する想定でよろしいでしょうか。</td><td>Drive/Dropbox・連番命名を推奨。</td></tr>
+        <tr class="qrow"><td>Q-7</td><td>品詞は8種（他/自/名/形/副/前/接/間）の想定でよろしいでしょうか。</td><td>8種で設計。</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s19">
+    <div class="sec-head"><div class="sec-num">19</div><h2>スケジュール（目安）</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>フェーズ</th><th>期間</th><th>成果物／節目</th></tr></thead>
+      <tbody>
+        <tr><td><strong>仕様確定</strong></td><td>約1週間</td><td>本書・画面遷移図・ER図の承認</td></tr>
+        <tr><td><strong>実装</strong></td><td>約4〜5週間</td><td>画面単位でビルド版を順次共有</td></tr>
+        <tr><td><strong>テスト・修正</strong></td><td>約1週間</td><td>テスト報告、β版納品</td></tr>
+        <tr><td><strong>納品・ストア申請</strong></td><td>納品後1〜2週間</td><td>GitHub納品、ストア公開</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><b>お支払いについて</b>：本プロジェクトは<b>固定報酬・完成後の一括お支払い</b>です（段階払い・出来高払いはございません）。Lancersの仮払い（エスクロー）済みのため、完成・ご検収後にお支払いが確定します。</div>
+    <div class="tip" style="font-weight:600;font-size:15px"><b>目標：2026年7月末 MVP完成・ストア公開。</b></div>
+  </section>
+
+  <section id="s20">
+    <div class="sec-head"><div class="sec-num">20</div><h2>変更履歴</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:90px">版</th><th style="width:140px">日付</th><th>内容</th></tr></thead>
+      <tbody><tr><td><strong>v1.0</strong></td><td>2026-05-25</td><td>初版（仕様確定フェーズ・ご確認用）</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <div class="foot">
+    <span class="mark">快単 · KAITAN</span>
+    本書の内容にご不明点・ご要望がございましたら、メッセージにてお気軽にお知らせください。ご承認をもって実装フェーズに着手いたします。
+  </div>
+
+</div>
+
+<button class="toc-fab" id="tocFab" aria-label="目次を開く">
+  <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+  目次
+</button>
+<div class="toc-overlay" id="tocOverlay"></div>
+<aside class="toc-drawer" id="tocDrawer" aria-hidden="true">
+  <div class="dh"><h2>目次</h2><button id="tocClose" aria-label="閉じる">&times;</button></div>
+  <div class="dlist">
+    <a href="#s1"><span class="n">01</span>プロジェクト概要</a>
+    <a href="#s2"><span class="n">02</span>用語定義</a>
+    <a href="#s3"><span class="n">03</span>機能一覧（MVP範囲）</a>
+    <a href="#s4"><span class="n">04</span>画面仕様</a>
+    <a href="#s5"><span class="n">05</span>満点法ロジック詳細</a>
+    <a href="#s6"><span class="n">06</span>「初回OKを除く」仕様</a>
+    <a href="#s7"><span class="n">07</span>ブロック管理仕様</a>
+    <a href="#s8"><span class="n">08</span>星評価システム仕様</a>
+    <a href="#s9"><span class="n">09</span>学習履歴・データ永続化</a>
+    <a href="#s10"><span class="n">10</span>単語データ仕様</a>
+    <a href="#s11"><span class="n">11</span>音声仕様</a>
+    <a href="#s12"><span class="n">12</span>非機能要件</a>
+    <a href="#s13"><span class="n">13</span>技術構成（概要）</a>
+    <a href="#s14"><span class="n">14</span>テスト・品質保証</a>
+    <a href="#s15"><span class="n">15</span>納品物</a>
+    <a href="#s16"><span class="n">16</span>対象外・将来拡張</a>
+    <a href="#s17"><span class="n">17</span>ストア申請（参考）</a>
+    <a href="#s18"><span class="n">18</span>ご確認事項</a>
+    <a href="#s19"><span class="n">19</span>スケジュール（目安）</a>
+    <a href="#s20"><span class="n">20</span>変更履歴</a>
+  </div>
+</aside>
+<script>
+  (function(){
+    var fab=document.getElementById('tocFab'),
+        ov=document.getElementById('tocOverlay'),
+        dr=document.getElementById('tocDrawer'),
+        cl=document.getElementById('tocClose');
+    function open(){dr.classList.add('open');ov.classList.add('open');dr.setAttribute('aria-hidden','false');}
+    function close(){dr.classList.remove('open');ov.classList.remove('open');dr.setAttribute('aria-hidden','true');}
+    fab.addEventListener('click',open);
+    cl.addEventListener('click',close);
+    ov.addEventListener('click',close);
+    dr.querySelectorAll('.dlist a').forEach(function(a){a.addEventListener('click',close);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  })();
+</script>
+</body>
+</html>

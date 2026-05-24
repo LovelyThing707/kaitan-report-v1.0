@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快単 画面遷移図 v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4EFE4; --paper-2:#EBE3D3; --surface:#FFFDF8;
+  --ink:#272F37; --ink-soft:#565D64; --muted:#8A8170;
+  --line:#E4DBC9; --line-soft:#EFE8D9;
+  --brand:#14534B; --brand-deep:#0E3C36; --brand-soft:#E5EEEA;
+  --gold:#A9762A; --gold-soft:#FAF1DA; --gold-line:#E6CF9C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Zen Kaku Gothic New",sans-serif;background:var(--paper);
+  background-image:radial-gradient(circle at 12% -10%,rgba(20,83,75,.06),transparent 42%),radial-gradient(circle at 100% 0%,rgba(169,118,42,.06),transparent 38%);
+  color:var(--ink);line-height:1.8;font-size:16px;-webkit-font-smoothing:antialiased;padding:0;
+}
+.page{max-width:920px;margin:0 auto;padding:30px 18px 90px}
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;height:58px;padding:0 22px;background:rgba(244,239,228,.88);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+.topbar .brand{font-family:"Shippori Mincho",serif;font-weight:700;color:var(--brand);text-decoration:none;font-size:16px;letter-spacing:.05em;white-space:nowrap;line-height:1.05}
+.topbar .brand .en{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.32em;color:var(--gold);display:block;margin-top:1px}
+.topbar nav{margin-left:auto;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.topbar nav::-webkit-scrollbar{display:none}
+.topbar nav a{font-size:12.5px;text-decoration:none;padding:7px 14px;border-radius:99px;color:var(--ink-soft);white-space:nowrap;transition:.2s;font-weight:500}
+.topbar nav a:hover{background:var(--brand-soft);color:var(--brand-deep)}
+.topbar nav a.cur{background:var(--brand);color:#F5F0E4;font-weight:700}
+.masthead{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--brand-deep),var(--brand) 70%);color:#F5F0E4;border-radius:20px;padding:44px 46px 40px;box-shadow:0 24px 60px -28px rgba(14,60,54,.7);animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.masthead::after{content:"遷移";position:absolute;right:-2px;bottom:-40px;font-family:"Shippori Mincho",serif;font-weight:800;font-size:170px;color:rgba(255,255,255,.05);line-height:1}
+.eyebrow{position:relative;z-index:1;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-line);margin-bottom:18px}
+.masthead h1{position:relative;z-index:1;font-family:"Shippori Mincho",serif;font-weight:800;font-size:38px;line-height:1.28;margin-bottom:10px}
+.masthead .lead{color:rgba(245,240,228,.82);font-size:15px;max-width:62ch;position:relative;z-index:1}
+.meta{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-top:22px;margin-bottom:30px;padding:8px;position:relative;z-index:2;box-shadow:0 18px 40px -30px rgba(40,48,55,.4);display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;animation:rise .7s .1s cubic-bezier(.2,.7,.2,1) both}
+.meta div{padding:13px 18px;background:var(--surface)}
+.meta dt{font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;font-family:"JetBrains Mono",monospace}
+.meta dd{font-size:14.5px;font-weight:500}
+.note-band{background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:14px;padding:18px 22px;margin-bottom:34px;font-size:14.5px;color:#5e4a23;animation:rise .7s .15s cubic-bezier(.2,.7,.2,1) both}
+.note-band b{color:#7a5e1f}
+section{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:34px 38px;margin-bottom:22px;box-shadow:0 2px 0 rgba(228,219,201,.5);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.sec-head{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--line-soft)}
+.sec-num{flex-shrink:0;width:42px;height:42px;border-radius:12px;background:var(--brand);color:#F5F0E4;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-weight:600;font-size:17px;box-shadow:0 8px 18px -8px rgba(20,83,75,.6)}
+.sec-head h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:22px;letter-spacing:.02em}
+.cap{color:var(--ink-soft);font-size:14px;margin-bottom:16px}
+.diagram{background:#FFFDF8;border:1px solid var(--line);border-radius:14px;padding:22px 14px;overflow-x:auto;text-align:center;-webkit-overflow-scrolling:touch}
+.diagram .mermaid{display:inline-block;min-width:100%}
+.tip{position:relative;background:var(--gold-soft);border-radius:13px;padding:16px 20px 16px 52px;margin:18px 0 4px;font-size:14px;color:#5e4a23;border:1px solid var(--gold-line)}
+.tip::before{content:"💡";position:absolute;left:18px;top:15px;font-size:18px}
+.tip b{color:#7a5e1f}
+.keep{background:#FBF6E4;border:1px dashed var(--gold-line);border-radius:12px;padding:14px 18px;margin-top:14px;font-size:13.5px;color:#6b5526;text-align:center;font-weight:500}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0 4px}
+table{border-collapse:collapse;width:100%;font-size:13.6px;min-width:480px}
+th{background:var(--brand);color:#F3EEE2;font-weight:600;text-align:left;padding:11px 14px;font-size:12.8px;white-space:nowrap}
+td{padding:10px 14px;border-top:1px solid var(--line-soft);vertical-align:top;color:var(--ink-soft)}
+tbody tr:nth-child(even){background:#FBF8F1}
+tbody tr:hover{background:var(--brand-soft)}
+td strong{color:var(--brand-deep)}
+ul{margin:6px 0 4px 1.3em}li{margin-bottom:8px}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin-top:34px;padding:24px;font-style:italic;font-family:"Shippori Mincho",serif}
+.foot .mark{font-family:"JetBrains Mono",monospace;font-style:normal;letter-spacing:.3em;font-size:11px;color:var(--brand);display:block;margin-bottom:8px}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (max-width:680px){
+  body{font-size:15px}.page{padding:22px 12px 80px}
+  .masthead{padding:30px 22px}.masthead h1{font-size:26px}.masthead::after{font-size:120px;bottom:-26px}
+  section{padding:22px 17px}.meta{grid-template-columns:1fr}
+  .sec-head{gap:12px}.sec-num{width:36px;height:36px;font-size:15px;border-radius:10px}.sec-head h2{font-size:18px}
+  .topbar{height:54px;padding:0 14px}.topbar .brand{font-size:15px}
+  .diagram{padding:16px 8px}
+}
+@media print{body{background:#fff;padding:0}.topbar{display:none!important}.masthead{box-shadow:none;background:none;border-bottom:3px solid var(--brand);border-radius:0;color:var(--ink)}.masthead::after{display:none}.masthead .eyebrow,.masthead h1,.masthead .lead{color:var(--ink)}section,.meta,.note-band{box-shadow:none;break-inside:avoid;animation:none}*{animation:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top">快単<span class="en">KAITAN</span></a>
+  <nav>
+    <a href="01_快単_詳細仕様書_v1.0.html">01 詳細仕様書</a>
+    <a class="cur" href="#top">02 画面遷移図</a>
+    <a href="03_快単_ER図_v1.0.html">03 ER図</a>
+  </nav>
+</header>
+<div class="page" id="top">
+
+  <header class="masthead">
+    <div class="eyebrow">快単 · English Vocabulary App</div>
+    <h1>画面遷移図<br><span style="font-size:.62em;font-weight:600">MVP / First stage</span></h1>
+    <p class="lead">解説書の画面番号（①〜⑪）に準拠し、MVP（First stage）の画面の流れと、満点法ロジックの状態遷移を図示します。</p>
+  </header>
+
+  <dl class="meta">
+    <div><dt>バージョン</dt><dd>v1.0（仕様確定フェーズ・ご確認用）</dd></div>
+    <div><dt>作成日</dt><dd>2026年5月25日</dd></div>
+    <div><dt>宛先</dt><dd>一般社団法人KAI　菊地雅文 様</dd></div>
+    <div><dt>関連文書</dt><dd>01 詳細仕様書 / 03 ER図</dd></div>
+  </dl>
+
+  <div class="note-band">
+    本図は解説書の画面番号（①〜⑪）に準拠し、<b>MVP（First stage）</b>の画面遷移を示します。Second stage・育成キャラクター（⓪/⑫）は対象外のため<b>点線</b>で参考表示しています。
+  </div>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">01</div><h2>全体遷移図（俯瞰）</h2></div>
+    <p class="cap">起動からスタート画面・範囲指定・問題／解答の往復・結果表示・指定範囲終了までの、画面全体の流れです。点線はMVP対象外（将来）の遷移です。</p>
+    <div class="diagram">
+<pre class="mermaid">
+flowchart TD
+  S(["起動 / スプラッシュ"]) --> A
+  A["① スタート画面<br/>First stage / Second stage<br/>各ステージに ★5 表示"]
+  A -->|"First stage"| C["②③ 範囲指定画面<br/>46ブロック選択"]
+  A -. "Second stage（MVP対象外）" .-> P["「準備中」表示<br/>遷移なし"]
+  A -. "将来" .-> Z["⓪ キャラ選択画面<br/>Second stage"]
+  Z -.-> C
+  C -->|"スタート / 初回OKを除く"| Q["⑥ 問題画面<br/>単語・品詞・№・TTS<br/>残/総数・OK・再チェック"]
+  Q -->|"意味・例文"| ANS["⑦ 解答画面<br/>意味・覚え方・例文<br/>OK / 再チェック"]
+  ANS -->|"OK / 再チェック（巡の途中）"| Q
+  ANS -->|"当該巡の最終単語を判定"| R["⑧⑩ 結果表示画面<br/>総数・OK・再チェック"]
+  R -->|"次に進む（再チェックあり）"| Q
+  R -->|"範囲再指定"| C
+  R -->|"再チェック0 = 全OK"| E["⑪ 指定範囲終了画面<br/>お祝い演出 3〜5秒"]
+  E -->|"演出後 自動"| A
+  classDef brand fill:#E5EEEA,stroke:#14534B,stroke-width:1.5px,color:#0E3C36;
+  classDef gold fill:#FAF1DA,stroke:#A9762A,stroke-width:1.5px,color:#5e4a23;
+  classDef dim fill:#F1ECE0,stroke:#B9AE97,stroke-width:1px,color:#7a715f,stroke-dasharray:4 3;
+  class A,C,Q,ANS,R brand;
+  class E gold;
+  class P,Z dim;
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">02</div><h2>学習セッションの状態遷移（満点法ロジック）</h2></div>
+    <p class="cap">問題⇄解答の往復と巡目進行を、ステートマシン（状態と遷移が定義された処理機構）として表現します。OKは出題リストから除外、再チェックは次巡へ繰り越し、全OKで指定範囲終了に至ります。</p>
+    <div class="diagram">
+<pre class="mermaid">
+stateDiagram-v2
+  direction TB
+  [*] --> 範囲指定
+  範囲指定 --> セッション開始 : スタート / 初回OKを除く
+  state セッション開始 {
+    [*] --> 出題リスト構築
+    出題リスト構築 --> ランダム並べ替え
+    ランダム並べ替え --> [*]
+  }
+  セッション開始 --> 問題提示 : 巡目=1
+  問題提示 --> 解答確認 : 意味・例文
+  解答確認 --> 単語OK : OK
+  解答確認 --> 単語再チェック : 再チェック
+  単語OK --> 巡内判定 : リストから除外
+  単語再チェック --> 巡内判定 : 次巡リストへ追加
+  巡内判定 --> 問題提示 : 当該巡に未出題あり
+  巡内判定 --> 結果表示 : 当該巡の全単語を出題済み
+  結果表示 --> 問題提示 : 次に進む（再チェックあり・巡目+1で再構成）
+  結果表示 --> 範囲指定 : 範囲再指定
+  結果表示 --> 指定範囲終了 : 全OK（再チェックなし）
+  指定範囲終了 --> スタート画面 : 演出後・自動（完了ブロック薄色化 / 回転数+1）
+  スタート画面 --> [*]
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">03</div><h2>範囲指定画面のブロック状態遷移</h2></div>
+    <p class="cap">各ブロックは「未学習（白）→ 選択中（青）→ 完了（薄色）」と状態が変化します。完了後も再選択して再学習でき、リセットで白に戻ります。</p>
+    <div class="diagram">
+<pre class="mermaid">
+stateDiagram-v2
+  direction LR
+  [*] --> 未学習_白
+  未学習_白 --> 選択中_青 : タップ / 一括選択
+  選択中_青 --> 未学習_白 : 再タップ（選択解除）
+  選択中_青 --> 完了_薄色 : 当該ブロックの全単語OK
+  完了_薄色 --> 選択中_青 : タップ（再選択して再学習可）
+  選択中_青 --> 未学習_白 : リセット
+  完了_薄色 --> 未学習_白 : リセット
+</pre>
+    </div>
+    <div class="keep">完了後も「初回OKを除く」用に、1巡目の再チェック記録を保持します。</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">04</div><h2>画面遷移一覧（表）</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:28%">遷移元</th><th>操作・条件</th><th style="width:30%">遷移先</th></tr></thead>
+      <tbody>
+        <tr><td><strong>起動</strong></td><td>スプラッシュ後</td><td>① スタート画面</td></tr>
+        <tr><td><strong>① スタート</strong></td><td>First stage</td><td>②③ 範囲指定</td></tr>
+        <tr><td><strong>① スタート</strong></td><td>Second stage（MVP）</td><td>「準備中」表示（遷移なし）</td></tr>
+        <tr><td><strong>②③ 範囲指定</strong></td><td>ブロックタップ</td><td>（選択状態変化・同画面）</td></tr>
+        <tr><td><strong>②③ 範囲指定</strong></td><td>リセット</td><td>（白に戻す・同画面）</td></tr>
+        <tr><td><strong>②③ 範囲指定</strong></td><td>スタート／初回OKを除く</td><td>⑥ 問題画面</td></tr>
+        <tr><td><strong>⑥ 問題画面</strong></td><td>意味・例文</td><td>⑦ 解答画面</td></tr>
+        <tr><td><strong>⑥ 問題画面</strong></td><td>スピーカー</td><td>（TTS再生・同画面）</td></tr>
+        <tr><td><strong>⑦ 解答画面</strong></td><td>OK／再チェック（巡の途中）</td><td>⑥ 問題画面（次の単語）</td></tr>
+        <tr><td><strong>⑦ 解答画面</strong></td><td>OK／再チェック（巡の最終単語）</td><td>⑧⑩ 結果表示画面</td></tr>
+        <tr><td><strong>⑧⑩ 結果表示</strong></td><td>次に進む（再チェックあり）</td><td>⑥ 問題画面（次巡）</td></tr>
+        <tr><td><strong>⑧⑩ 結果表示</strong></td><td>範囲再指定</td><td>②③ 範囲指定画面</td></tr>
+        <tr><td><strong>⑧⑩ 結果表示</strong></td><td>再チェック0（全OK）</td><td>⑪ 指定範囲終了画面</td></tr>
+        <tr><td><strong>⑪ 指定範囲終了</strong></td><td>演出後（自動）</td><td>① スタート画面</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">05</div><h2>注記</h2></div>
+    <ul>
+      <li><strong>⑥問題画面 ⇄ ⑦解答画面</strong> の往復は、操作速度を最優先するため遷移アニメーションを実質無し（100ms以下）とする。実装上は1画面内での表示切替とし、画面遷移の負荷を排除する。</li>
+      <li><strong>⓪キャラ選択画面・⑫Second stage</strong> は本MVPの対象外（点線表記）。将来、同一フレームワーク上で追加する。</li>
+      <li>46ブロック全完了時も①スタート画面へ戻り、<strong>星評価が1回転分進む</strong>（詳細は仕様書「8. 星評価」）。</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-num">06</div><h2>変更履歴</h2></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:90px">版</th><th style="width:140px">日付</th><th>内容</th></tr></thead>
+      <tbody><tr><td><strong>v1.0</strong></td><td>2026-05-25</td><td>初版（仕様確定フェーズ・ご確認用）</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <div class="foot">
+    <span class="mark">快単 · KAITAN</span>
+    画面の流れにご要望・ご不明点がございましたら、お気軽にお知らせください。
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:false,
+    securityLevel:'loose',
+    theme:'base',
+    themeVariables:{
+      fontFamily:"'Zen Kaku Gothic New', sans-serif",
+      fontSize:'14px',
+      primaryColor:'#E5EEEA',
+      primaryBorderColor:'#14534B',
+      primaryTextColor:'#272F37',
+      lineColor:'#9A8E78',
+      secondaryColor:'#FAF1DA',
+      tertiaryColor:'#FFFDF8',
+      noteBkgColor:'#FAF1DA',
+      noteBorderColor:'#E6CF9C'
+    },
+    flowchart:{curve:'basis',nodeSpacing:46,rankSpacing:54,padding:14,useMaxWidth:true},
+    state:{useMaxWidth:true}
+  });
+  mermaid.run();
+</script>
+</body>
+</html>
